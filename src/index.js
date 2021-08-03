@@ -7,7 +7,8 @@ import { contenido } from './module/app.js';
  */
 let productos = [];
 
-//Creando algunos Productos para pruebas:
+//Creando algunos Productos para pruebas
+//Comentar para verificar el error de no existen productos.
 for (let i = 0; i < 2; i++) {
   const objDatos = contenido();
   const objProducto = new Producto(
@@ -70,7 +71,6 @@ app.use(express.urlencoded({ extended: true }));
 //Ruta para guardar un producto nuevo si se cumplen los parámetros necesarios.
 app.post('/api/guardar', (req, res) => {
   const body = req.body;
-  let validacion = true;
   const errorGuardar = () => {
     return res.status(400).json({
       error: 'Parametros no validos',
@@ -85,6 +85,10 @@ app.post('/api/guardar', (req, res) => {
     errorGuardar();
   }
 
+  if (isNaN(parseFloat(body.price))) {
+    errorGuardar();
+  }
+
   if (body.thumbnail === undefined) {
     errorGuardar();
   }
@@ -95,6 +99,7 @@ app.post('/api/guardar', (req, res) => {
     body.thumbnail,
     productos.length + 1
   );
+
   productos.push(objProducto);
 
   res.json({
